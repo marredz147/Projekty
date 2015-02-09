@@ -1,0 +1,424 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{kpfonts}
+\usepackage{graphicx}
+\usepackage{lmodern}
+\graphicspath{ {C:/Users/Misiek/Desktop/Latex/} }
+\usepackage{setspace}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\definecolor{grey}{rgb}{0.9,0.9,0.9}
+\newcommand{\HRule}[1]{\hfill \rule{0.2\linewidth}{#1}}
+
+\lstset{
+	language=[Visual]C++,
+	keywordstyle=\bfseries\ttfamily\color[rgb]{0,0,1},
+	identifierstyle=\ttfamily,
+	commentstyle=\color[rgb]{0.133,0.545,0.133},
+	stringstyle=\ttfamily\color[rgb]{0.627,0.126,0.941},
+	showstringspaces=false,
+	basicstyle=\small,
+	numberstyle=\footnotesize,
+	numbers=left,
+	stepnumber=1,
+	numbersep=10pt,
+	tabsize=2,
+	breaklines=true,
+%prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+	breakatwhitespace=false,
+	aboveskip={1.5\baselineskip},
+  columns=fixed,
+  upquote=true,
+  extendedchars=true,
+% frame=single,
+% backgroundcolor=\color{grey},
+}
+
+%\title{Dodatek SW: Aplikacja podająca odchyłki wymiarów wg norm \\PN EN 13920}
+%\author{13K1\\Marcin Rędziński\\Michał Zawalski}
+\begin{document}
+\colorbox{grey}{
+	\parbox[t]{1.0\linewidth}{
+		\centering \fontsize{30pt}{40pt}\selectfont % The first argument for fontsize is the font size of the text and the second is the line spacing - you may need to play with these for your particular title
+		\vspace*{0.7cm} 
+		
+		\hfill \textbf{Dodatek SW} \\
+		\hfill Aplikacja podająca odchyłki \\
+		\hfill wymiarów wg norm PN EN 13920 \par
+		
+		\vspace*{0.7cm} % Space between the end of the title and the bottom of the grey box
+	}
+}
+\vfill
+{\centering \large 
+\hfill 13K1 \\
+\hfill Rędziński Marcin \\
+\hfill Zawalski Michał \\
+\HRule{1pt}} % Horizontal line, thickness changed here
+%\maketitle
+
+\newpage
+\tableofcontents
+\newpage
+\section{Temat oraz wymagania do projektu}
+
+\textbf{Temat: } Dodatek SW: Aplikacja podająca odchyłki wymiarów wg norm PN EN
+13920.
+\newline
+\newline
+\textbf{Wymagania do projektu: } Aplikacja ma podawać wartości odchyłek wymiarów
+liniowych i kątowych zgodnie z normami dla wskazanego w SW wymiaru i
+zadanej klasy dokładności. Dodatkowa funkcja: przypisanie wartości odchyłek
+do wskazanego wymiaru.
+\newline
+\newline
+\textbf{Technika wykonania aplikacji: } C\#, SW Add-in
+
+\section{Opis aplikacji}
+
+Aplikacja jest w pełni działającym dodatkiem do programu Solid Works. GUI aplikacji zostało wykonany w Windows Forms co czyni ją dodatkiem hybrydowym w SW. Aplikacja ma za zadanie podawanie wartości odchyłek liniowych i kątowych według norm PN EN 13920. Wartości te można zmieniać według własnych potrzeb a następnie przypisać daną/e odchyłki do zaznaczonego wymiaru modelu w SW. Aplikacja została w pełnym stopniu zabezpieczona przed niewłaściwym działaniem dzięki obsłudze wyjątków instrukcjami (try catch). 
+
+\newpage
+\section{Opis elementów aplikacji}
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=1]{form1on.jpg}
+\caption{Aktywne okno Form1}
+\end{figure}
+\textbf{Elementy: }
+\newline
+\newline
+\textit{1} - label1: "Typ wymiaru: "
+\newline
+\newline
+\textit{2} - label2: element pokazujący typ wymiaru ("Liniowy" albo "Kątowy")
+\newline
+\newline
+\textit{3} - label3: "Wartość: "
+\newline
+\newline
+\textit{4} - label4: wartość wskazanego wymiaru (dla Liniowego w milimetrach, dla kątowego w stopniach)
+\newline
+\newline
+\textit{5} - label7: "Klasa dokładności: "
+\newline 
+\newline
+\textit{6} - comboBox1: lista z której możemy wybrać klasę dokładności (A, B, C, D)
+\newline
+\newline
+\textit{7} - label5: "Odchyłka min:
+\newline
+\newline
+\textit{8} - textBox1: proponowana wartość minimalna odchyłki dla danego wymiaru i klasy dokładności wg norm PN EN 13920.
+\newline
+\newline
+\textit{9} - label6: "Odchyłka max" 
+\newline
+\newline
+\textit{10} - textBox2: proponowana wartość maksymalna odchyłki dla danego wymiaru i klasy dokładności wg norm PN EN 13920.
+\newline
+\newline
+\textit{11} - button1: przypisuje ustawione odchyłki do wymiaru w SW
+\newline
+\newline
+\textit{12} - button2: usuwa ustawione wczesniej odchyłki w SW o ile jakieś były
+\newline
+\newline
+\textit{13} - checkBox1: zaznaczony okienko ustawia parametr okienka TopMost na true (domyślnie zaznaczone)
+\newline
+\newline
+\textit{14} - toolStripStatusLabel1: wyświetla informacje co powinien zrobić użytkownik 
+\newpage
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=1]{kat.jpg}
+\caption{Aktywne okno Form2}
+\end{figure}
+\textbf{Elementy: }
+\newline
+\newline
+\textit{1} - label1: "Pierwsze ramię kąta "
+\newline
+\newline
+\textit{2} - textBox1: pokazuje długość przypisanego wymiaru liniowego dla pierwszego ramienia kąta (możliwość wprowadzenia wymiaru ręcznie poprzez jego wpisanie)
+\newline
+\newline
+\textit{3} - button1: przypisuje długość zaznaczonego wymiaru do pierwszego ramienia kąta
+\newline
+\newline
+\textit{4} - label2: "Drugie ramię kąta "
+\newline
+\newline
+\textit{5} - textBox2: pokazuje długość przypisanego wymiaru liniowego dla drugiego ramienia kąta (możliwość wprowadzenia wymiaru ręcznie poprzez jego wpisanie)
+\newline 
+\newline
+\textit{6} - button2: przypisuje długość zaznaczonego wymiaru do drugiego ramienia kąta
+\newline
+\newline
+\textit{7} - button3: zamyka okno Form2 przekazując przepisując zatwierdzone długości ramion kąta
+\newline
+\newline
+\textit{8} - button4: zamyka okno Form2
+\newline
+\newline
+\textit{9} - toolStripStatusLabel1: wyświetla informacje co powinien zrobić użytkownik  
+\newpage
+\section{Fragmenty kodu}
+\addcontentsline{toc}{section}{Metoda dodająca przycisk w SW do dodatku w toolboxie}
+\section*{Metoda dodająca przycisk w SW do dodatku w toolboxie}
+\begin{lstlisting}
+cmdIndex0 = cmdGroup.AddCommandItem2("Run Tolerance Tool", -1, "Laduje lub zwalnia dodatek Tolerance Tool", "Tolerance Tool", 0, "RunToleranceTool", "", mainItemID1, menuToolbarOption); 
+\end{lstlisting}
+
+Metoda ta zostaje wywołana po dodaniu do naszego dodatku do aktywnych. Dodaje ona przycisk na pasku \textit{C\# Addin} o nazwie \textit{Run Tolerance Tool}. 
+\newline
+\addcontentsline{toc}{section}{Metoda RunToleranceTool()}
+\section*{Metoda RunToleranceTool()}
+\begin{lstlisting}
+        public void RunToleranceTool()
+        {
+                if(iSwApp.GetFirstDocument()!=null)
+                {
+                    form = new Form1(iSwApp);
+                    form.Show();
+                }
+                else
+                {
+                    System.Windows.Forms.MessageBox.Show("Brak otwartego modelu");
+                }
+        }
+\end{lstlisting}
+Metoda wywoływana po naciśnięciu przycisku na pasku zadań w SW. Zawiera ona instrukcje warunkową if else która sprawdza czy jest otwarty dokument w SW. Jeśli tak metoda wywołuje formatkę Form1 z przekazaną zmienną iSwApp typu ISldWorks.
+Jeśli nie zostaje pokazany MessageBox z komunikatem "Brak otwartego modelu".
+\newline
+\addcontentsline{toc}{section}{Konstruktor Form1(ISldWorks iSwApp)}
+\section*{Konstruktor Form1(ISldWorks iSwApp)}
+\begin{lstlisting}
+        public Form1(ISldWorks iSwApp)
+        {
+            InitializeComponent();
+            this.TopMost = true;
+            checkBox1.Checked = true;
+            Rodzic = iSwApp;
+
+            Thread trd = new Thread(new ThreadStart(this.UpdateUI));
+            trd.IsBackground = true;
+            trd.Start();
+            comboBox1.Text = "A";
+
+        }
+\end{lstlisting}
+W konstruktorze zostały zdefiniowane początkowe parametry formatki oraz start nowego wątku \emph{trd} który wykonuje metodę w klasie formatki \emph{UpdateUI} by nie wykonywać zawsze wykonywał się tylko jeden wątek co zabezpiecza przez spowolnieniem aplikacji.
+\newpage
+\addcontentsline{toc}{section}{Klasa ControlExtensions()}
+\section*{Klasa ControlExtensions()}
+
+\begin{lstlisting}
+    public static class ControlExtensions
+    {
+        public static void InvokeIfRequired(this Control control, Action action)
+        {
+
+            if (control.InvokeRequired)
+                control.Invoke(action);
+            else
+                action();
+        }
+        public static void InvokeIfRequired<T>(this Control control, Action<T> action, T parameter)
+        {
+            try
+            {
+                if (control.InvokeRequired)
+                    control.Invoke(action, parameter);
+                else
+                    action(parameter);
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+    }
+\end{lstlisting}
+Klasa ta posiada dwie metody które służą do przekazywania wartości z jednego wątku do drugiego poprzez zatrzymanie jednego z nich za czas przekazywania danej wartości a następnie wznowienie go.
+\newline
+\addcontentsline{toc}{section}{Metoda UpdateUI()}
+\section*{Metoda UpdateUI()}
+
+W metodzie UpdateUI zostaje obsłużone cykliczne (dzięki zastosowaniu pętli while(true)) przekazywanie informacji o zaznaczonym wymiarze w SW do aplikacji. Żeby tego dokonać potrzebne jest wpierw sprawdzenie instrukcją warunkową if else czy wpierw został wybrany jakiś model:
+\newline
+\begin{lstlisting}
+model = (ModelDoc2)Rodzic.ActiveDoc;
+                    if (model != null)
+                    {
+                        swModelDocExt = model.Extension;
+                        selectionMgr = model.SelectionManager;       
+\end{lstlisting}
+wtedy zostaje przypisany SelectionManager dziedziczący z modelu do obiektu selectionMgr klasy ISelectionMgr.
+Następnie sprawdzamy czy wybrany element jest wymiarem:
+\begin{lstlisting}
+if (selectionMgr.GetSelectedObjectType3(1, 0) == 14)       
+\end{lstlisting}
+\newpage
+a następnie zostają aktywowane elementy okienka:
+\begin{lstlisting}
+this.InvokeIfRequired((value) => toolStripStatusLabel1.Text = value, "");
+this.InvokeIfRequired((value) => comboBox1.Enabled = value, true);
+this.InvokeIfRequired((value) => textBox1.Enabled = value, true);                  
+this.InvokeIfRequired((value) => textBox2.Enabled = value, true);
+this.InvokeIfRequired((value) => button1.Enabled = value, true);
+this.InvokeIfRequired((value) => button2.Enabled = value, true);
+\end{lstlisting}
+dalej tworzymy obiekt typu DisplayDimension i rzutujemy na niego dane zaznaczonego wymiaru aby móc sprawdzić jakiego jest typu
+\begin{lstlisting}
+sel_obj = selectionMgr.GetSelectedObject6(1, 0);                                   
+if (sel_obj.GetType() == (int)swDimensionType_e.swLinearDimension || sel_obj.GetType() == (int)swDimensionType_e.swRadialDimension)
+{
+      this.InvokeIfRequired((value) => label2.Text = value, "Wymiar liniowy");     
+}
+\end{lstlisting}
+w taki sam sposób robimy dla wymiaru kątowego i dla błędnego zaznaczenia. Następnie pobieramy obiekt zawierający wymiar oraz drugi zawierający tolerancje i rozpoczynamy pracę w głównym wątku w celu dostępu do kontrolek winforms
+\newline
+\begin{lstlisting}
+odl = sel_obj.GetDimension(); 
+tolerancja = odl.Tolerance; 
+this.Invoke((MethodInvoker)delegate
+{
+	norma = comboBox1.Text;
+	if ((label4.Text != Math.Round(odl.Value, 2) + " ")&&(label4.Text != Math.Round(odl.Value, 2) + " mm"))
+	{
+			if (sel_obj.GetType() == (int)swDimensionType_e.swAngularDimension)
+		{
+			uruchom_form2 = 1;
+			ramie = 0;
+			textBox1.Text = textBox2.Text = "";
+		}
+		else
+			uruchom_form2 = 0;
+	}
+	else
+		uruchom_form2 = 0;
+	if (label2.Text == "Wymiar liniowy")
+		label4.Text = Math.Round(odl.Value, 2) + " mm";
+	if (label2.Text == "Wymiar katowy")
+		label4.Text = Math.Round(odl.Value, 2) + " ";});
+\end{lstlisting}
+\newpage
+w wątku powyżej w przypadku wymiaru kątowego ustawiamy 
+flage uruchom\_form2 na wartość 1 w celu późniejszego
+ pobrania brakujących wymiarów boków przystających a 
+ następnie wyświetlamy w elemencie Form1 label4 
+ zaokrąglony wybrany wymiar do 2 miejsc po przecinku.
+ Poniżej zostanie pokazany kod obsługujący zlecenie pobrania wymiaru z drugiej formatki:
+\begin{lstlisting}
+if (uruchom_form2 == 1)
+{
+	sel_obj_b = sel_obj;
+	form2 = new Form2(Rodzic);
+	form2.ShowDialog();
+	if (form2.DialogResult == DialogResult.Cancel)
+	{
+		ramie = 0;
+	}
+	else
+	{
+		ramie = form2.ramie;
+		form2.Dispose();
+		this.Invoke((MethodInvoker)delegate
+		{
+			Update_Tolerance();
+		});
+	}
+	model.ClearSelection();
+	s_data = selectionMgr.CreateSelectData();
+	selectionMgr.AddSelectionListObject(sel_obj_b, s_data);
+}
+\end{lstlisting}
+W przypadku gdy nie jest zaznaczony żaden prawidłowy wymiar główna formatka zostaje "zablokowana" i czeka na wskazanie poprawnego wymiaru.
+\begin{lstlisting}
+	else
+	{
+		this.InvokeIfRequired((value) => toolStripStatusLabel1.Text = value, "Zaznacz prawidlowy wymiar");
+		this.InvokeIfRequired((value) => label2.Text = value, "Brak zaznaczenia");
+		this.InvokeIfRequired((value) => label4.Text = value, "0");
+		this.InvokeIfRequired((value) => comboBox1.Enabled = value, false);
+		this.InvokeIfRequired((value) => textBox1.Enabled = value, false);
+		this.InvokeIfRequired((value) => textBox2.Enabled = value, false);
+		this.InvokeIfRequired((value) => textBox1.Text = value, "");
+		this.InvokeIfRequired((value) => textBox2.Text = value, "");
+		this.InvokeIfRequired((value) => button1.Enabled = value, false);
+		this.InvokeIfRequired((value) => button2.Enabled = value, false);
+	}
+\end{lstlisting}
+Główny wątek zostaje uśpiony na 100ms gdyż częstsze wykonywanie nie jest konieczne a oszczędzamy dzięki temu procesor.
+\begin{lstlisting}
+Thread.Sleep(100);
+\end{lstlisting}
+\newpage
+\addcontentsline{toc}{section}{Metoda Update\_Tolerance()}
+\section*{Metoda Update\_Tolerance()}
+\begin{lstlisting}
+void Update_Tolerance()
+        {
+            double wymiar;
+            textBox1.Text = textBox2.Text = "0";
+            if (label2.Text == "Wymiar liniowy")
+            {
+                wymiar = Math.Round(odl.Value, 2);
+                switch (norma)
+                {
+                    case "A":
+                        if (wymiar < 2.0)
+                        {
+                            textBox1.Text = textBox2.Text = "0";
+                        }
+                        else if (wymiar >= 2.0 && wymiar <= 400)
+                        {
+                            textBox1.Text = textBox2.Text = "1";
+                        }
+\end{lstlisting}
+Funkcja to proponuje odchyłki wymiarów wg norm PN EN 13920 w zależności od długości zaznaczonego wymiaru:
+\newpage
+\section{Podręcznik użytkowania}
+Po dodaniu naszego dodatku do przestrzeni roboczej SolidWorksa nie musimy go dodawać do aktywnych ponieważ własne dodatki są automatycznie dodawane do paska. Wybieramy go z zakładki \textbf{C\# Addin}.
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.7]{3.jpg}
+\end{figure}
+\newline
+Nasz dodatek jest włączony i gotowy do działania.
+\newline
+W celu dodania odchyłki do wymiaru liniowego wpierw musimy zaznaczyć interesujący nas wymiar lub wybrać klasę dokładności a następnie zaznaczyć wymiar.
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.7]{5.jpg}
+\end{figure}
+\newline
+Aplikacja zaproponowała nam górną jak i dolną odchyłkę wg norm PN EN 13920 i wybranej klasy dokładności (domyślnie A). Po wybraniu innej klasy z listy wartości odchyłek zostaną zmienione na nową wartość zgodną z normą. Po naciśnięciu przycisku Przypisz zdefiniowane przez nas wartości odchyłek zostaną przypisane do wymiaru.
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.7]{9.jpg}
+\end{figure}
+\newpage
+Procedura do nadania odchyłek dla kąta jest podobna lecz w tym celu dodatkowo musimy zaznaczyć i przypisać dany wymiar lub wprowadzić go ręcznie do 2 ramion kąta. W tym celu po zaznaczeniu wymiaru kątowego wyświetla nam się druga formatka
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.7]{6.jpg}
+\end{figure}
+\newline
+Wymiary te można wpisać lub wprowadzić je przez naciśnięcie przycisku Przypisz obok odpowiedniego boku po przy zaznaczonym wymiarze w SW.
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.7]{7.jpg}
+\end{figure}
+\newline
+Po zatwierdzeniu wrócimy do głównego okienka aplikacji z zaproponowanymi odchyłkami które możemy zmienić tak samo jak klasę dokładności. Gdy odchyłki zostaną przez Nas dopasowane możemy tak samo jak w przypadku wymiaru liniowego przypisać je do wymiaru.
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.7]{8.jpg}
+\end{figure}
+\newline
+\end{document}
