@@ -1,3 +1,5 @@
+% In your .tex file
+% !TEX program = xelatex
 \documentclass[11pt,a4paper]{article}
 \usepackage{polski}
 \usepackage[utf8]{inputenc}
